@@ -12,7 +12,7 @@ knowledge_n = 102
 student_n = 1709
 
 device = torch.device(('cuda:0') if torch.cuda.is_available() else 'cpu')
-epoch_n = 100
+epoch_n = 200
 
 
 def train():

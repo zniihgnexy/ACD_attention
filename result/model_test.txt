@@ -5,3 +5,9 @@ epoch= 45, accuracy= 0.723859, rmse= 0.428389, auc= 0.793901
 epoch= 45, accuracy= 0.721637, rmse= 0.429051, auc= 0.793670
 epoch= 60, accuracy= 0.723745, rmse= 0.428768, auc= 0.792944
 epoch= 100, accuracy= 0.725726, rmse= 0.427282, auc= 0.797089
+epoch= 100, accuracy= 0.720697, rmse= 0.430119, auc= 0.793550
+epoch= 100, accuracy= 0.721459, rmse= 0.430064, auc= 0.793352
+epoch= 100, accuracy= 0.723669, rmse= 0.429440, auc= 0.794701
+epoch= 68, accuracy= 0.726818, rmse= 0.426909, auc= 0.796620
+epoch= 64, accuracy= 0.726932, rmse= 0.426899, auc= 0.796530
+epoch= 200, accuracy= 0.726094, rmse= 0.428477, auc= 0.794798

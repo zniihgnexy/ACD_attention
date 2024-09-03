@@ -56,7 +56,7 @@ class Net(nn.Module):
         self.prednet_full3 = nn.Linear(self.prednet_len2, 1)
         
         self.prednet_full4 = nn.Linear(408, 102)
-        self.dropout = nn.Dropout(p=0.5)  # p 是dropout概率
+        self.dropout = nn.Dropout(p=0.2)  # p 是dropout概率
         self.layer_norm1 = nn.LayerNorm(self.prednet_len1)
         self.layer_norm2 = nn.LayerNorm(self.prednet_len2)
         self.bn1 = nn.BatchNorm1d(self.prednet_len1)
@@ -99,7 +99,7 @@ class Net(nn.Module):
         input_x = self.dropout(input_x)
         # print("size of input_x:", input_x.size())
         input_x = torch.sigmoid(self.prednet_full2(input_x))
-        # input_x = self.dropout(input_x)
+        input_x = self.dropout(input_x)
         o = torch.sigmoid(self.prednet_full3(input_x))
         
         affect = torch.sigmoid(self.prednet_affect(torch.cat((stu_affect, k_difficulty), dim=1)))
