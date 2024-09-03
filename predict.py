@@ -9,7 +9,7 @@ exer_n = 3162
 knowledge_n = 102
 student_n = 1709
 
-epoch = 60
+epoch = 100
 
 def test(epoch):
     data_loader = ValTestDataLoader('test')
@@ -71,4 +71,4 @@ if __name__ == '__main__':
         i_f.readline()
         student_n, exer_n, knowledge_n = list(map(eval, i_f.readline().split(',')))
 
-    test(45)
+    test(100)

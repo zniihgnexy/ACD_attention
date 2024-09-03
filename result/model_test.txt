@@ -1,0 +1,7 @@
+epoch= 45, accuracy= 0.722018, rmse= 0.429244, auc= 0.791627
+epoch= 45, accuracy= 0.722018, rmse= 0.429244, auc= 0.791627
+epoch= 45, accuracy= 0.722208, rmse= 0.429066, auc= 0.793134
+epoch= 45, accuracy= 0.723859, rmse= 0.428389, auc= 0.793901
+epoch= 45, accuracy= 0.721637, rmse= 0.429051, auc= 0.793670
+epoch= 60, accuracy= 0.723745, rmse= 0.428768, auc= 0.792944
+epoch= 100, accuracy= 0.725726, rmse= 0.427282, auc= 0.797089

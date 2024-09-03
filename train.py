@@ -12,7 +12,7 @@ knowledge_n = 102
 student_n = 1709
 
 device = torch.device(('cuda:0') if torch.cuda.is_available() else 'cpu')
-epoch_n = 200
+epoch_n = 100
 
 
 def train():
@@ -44,16 +44,19 @@ def train():
 
             running_loss += loss.item()
             if batch_count % 200 == 199:
-                print('[%d, %5d] loss: %.3f' % (epoch + 1, batch_count + 1, running_loss / 200))
+                # print('[%d, %5d] loss: %.3f' % (epoch + 1, batch_count + 1, running_loss / 200))
                 running_loss = 0.0
 
         rmse, auc = validate(net, epoch)
         save_snapshot(net, 'model/model_epoch' + str(epoch + 1))
 
 
+
 def validate(model, epoch):
     data_loader = ValTestDataLoader('validation')
-    net = Net(student_n, exer_n, knowledge_n)
+    # net = Net(student_n, exer_n, knowledge_n)
+    net = Net(student_n, exer_n, knowledge_n, num_heads=6)
+
     print('validating model...')
     data_loader.reset()
     # load model parameters
@@ -74,8 +77,8 @@ def validate(model, epoch):
             if (labels[i] == 1 and output[i] > 0.5) or (labels[i] == 0 and output[i] < 0.5):
                 correct_count += 1
         exer_count += len(labels)
-        pred_all += output.to(torch.device('cpu')).tolist()
-        label_all += labels.to(torch.device('cpu')).tolist()
+        pred_all += output.to(torch.device('cuda:0')).tolist()
+        label_all += labels.to(torch.device('cuda:0')).tolist()
 
     pred_all = np.array(pred_all)
     label_all = np.array(label_all)
@@ -112,5 +115,5 @@ if __name__ == '__main__':
     with open('config.txt') as i_f:
         i_f.readline()
         student_n, exer_n, knowledge_n = list(map(eval, i_f.readline().split(',')))
-    while True:
-        train()
+    # while True:
+    train()
