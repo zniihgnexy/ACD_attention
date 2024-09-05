@@ -12,7 +12,7 @@ knowledge_n = 102
 student_n = 1709
 
 device = torch.device(('cuda:0') if torch.cuda.is_available() else 'cpu')
-epoch_n = 200
+epoch_n = 100
 
 
 def train():
@@ -77,8 +77,8 @@ def validate(model, epoch):
             if (labels[i] == 1 and output[i] > 0.5) or (labels[i] == 0 and output[i] < 0.5):
                 correct_count += 1
         exer_count += len(labels)
-        pred_all += output.to(torch.device('cuda:0')).tolist()
-        label_all += labels.to(torch.device('cuda:0')).tolist()
+        pred_all += output.to(torch.device('cpu')).tolist()
+        label_all += labels.to(torch.device('cpu')).tolist()
 
     pred_all = np.array(pred_all)
     label_all = np.array(label_all)

@@ -3,6 +3,10 @@ from numpy import size
 import torch
 import torch.nn as nn
 
+# logs
+# 0.25 with one dropout, 0.7253
+# 0.25 with two dropout
+
 class MultiHeadAttention(nn.Module):
     def __init__(self, num_heads, model_dim):
         super(MultiHeadAttention, self).__init__()
@@ -56,11 +60,16 @@ class Net(nn.Module):
         self.prednet_full3 = nn.Linear(self.prednet_len2, 1)
         
         self.prednet_full4 = nn.Linear(408, 102)
-        self.dropout = nn.Dropout(p=0.2)  # p 是dropout概率
+        self.dropout = nn.Dropout(p=0.25)  # p 是dropout概率
         self.layer_norm1 = nn.LayerNorm(self.prednet_len1)
         self.layer_norm2 = nn.LayerNorm(self.prednet_len2)
         self.bn1 = nn.BatchNorm1d(self.prednet_len1)
         self.bn2 = nn.BatchNorm1d(self.prednet_len2)
+        # p = 0.6 not so good, acc around0.722 and stopped, p=0.45 is higher at 0.723
+        # p=0.25 is the best, acc around 0.7253
+        # p = 0.2 acc around 0,7238 p = 0.15 acc around 0.732
+        # p=0.3
+
 
         # Weight initialization
         # for name, param in self.named_parameters():
@@ -94,12 +103,13 @@ class Net(nn.Module):
         # change teh size by adding a linear layer
         refined_input = torch.sigmoid(self.prednet_full4(refined_input))
         input_x = e_discrimination * refined_input * kn_emb
+        # input_x = e_discrimination * refined_input
         
         input_x = torch.sigmoid(self.prednet_full1(input_x))
         input_x = self.dropout(input_x)
         # print("size of input_x:", input_x.size())
         input_x = torch.sigmoid(self.prednet_full2(input_x))
-        input_x = self.dropout(input_x)
+        # input_x = self.dropout(input_x)
         o = torch.sigmoid(self.prednet_full3(input_x))
         
         affect = torch.sigmoid(self.prednet_affect(torch.cat((stu_affect, k_difficulty), dim=1)))

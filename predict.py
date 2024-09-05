@@ -71,4 +71,4 @@ if __name__ == '__main__':
         i_f.readline()
         student_n, exer_n, knowledge_n = list(map(eval, i_f.readline().split(',')))
 
-    test(200)
+    test(100)
