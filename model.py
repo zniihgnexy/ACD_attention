@@ -59,7 +59,7 @@ class Net(nn.Module):
         self.prednet_full2 = nn.Linear(self.prednet_len1, self.prednet_len2)
         self.prednet_full3 = nn.Linear(self.prednet_len2, 1)
         
-        self.prednet_full4 = nn.Linear(408, 102)
+        self.prednet_full4 = nn.Linear(358, 102)
         self.dropout = nn.Dropout(p=0.25)  # p 是dropout概率
         self.layer_norm1 = nn.LayerNorm(self.prednet_len1)
         self.layer_norm2 = nn.LayerNorm(self.prednet_len2)
@@ -69,6 +69,16 @@ class Net(nn.Module):
         # p=0.25 is the best, acc around 0.7253
         # p = 0.2 acc around 0,7238 p = 0.15 acc around 0.732
         # p=0.3
+        
+        self.emotion_extractor = nn.Sequential(
+            nn.Linear(self.affect_dim, 256),
+            # nn.ReLU(),
+            nn.Linear(256, 64),
+            # nn.ReLU(),
+            nn.Dropout(p=0.3)
+        )
+        self.emotion_combiner = nn.Linear(268, 256)
+        # self.prednet_full1 = nn.Linear(256 + self.knowledge_dim, self.prednet_len1)
 
 
         # Weight initialization
@@ -89,27 +99,22 @@ class Net(nn.Module):
         
         combined_emb = torch.cat((stu_emb, k_difficulty), dim=1)
         attention_output = self.attention(combined_emb, combined_emb, combined_emb)
+        attention_output = attention_output.view(attention_output.size(0), -1)
         
-        # Flatten the attention output correctly before concatenation
-        attention_output = attention_output.view(attention_output.size(0), -1)  # Flatten attention output        
-        # print("Attention Output Shape:", attention_output.shape)
-        # print("Knowledge Embedding Shape:", kn_emb.shape)
+        emotional_features = self.emotion_extractor(stu_affect)
+        emotional_context = torch.cat([attention_output, emotional_features], dim=1)
+        emotional_context = self.emotion_combiner(emotional_context)
 
-        combined_features = torch.cat((attention_output, kn_emb), dim=1)
-        # print("Combined Features Shape:", combined_features.shape)
-        # breakpoint()
-        # print("the size of stu_emb - k_difficulty:", stu_emb - k_difficulty)
-        refined_input = torch.cat([combined_features, stu_emb - k_difficulty], dim=1) # 256, 408 - 256, 102
-        # change teh size by adding a linear layer
-        refined_input = torch.sigmoid(self.prednet_full4(refined_input))
-        input_x = e_discrimination * refined_input * kn_emb
-        # input_x = e_discrimination * refined_input
+        combined_features = torch.cat((emotional_context, kn_emb), dim=1)
         
+        # Ensure the input dimensions match the expectation for the next layer
+        refined_input = self.prednet_full4(combined_features)  # Updated layer with correct dimensions
+        refined_input = torch.sigmoid(refined_input)  # Activation function
+
+        input_x = e_discrimination * refined_input * kn_emb
         input_x = torch.sigmoid(self.prednet_full1(input_x))
         input_x = self.dropout(input_x)
-        # print("size of input_x:", input_x.size())
         input_x = torch.sigmoid(self.prednet_full2(input_x))
-        # input_x = self.dropout(input_x)
         o = torch.sigmoid(self.prednet_full3(input_x))
         
         affect = torch.sigmoid(self.prednet_affect(torch.cat((stu_affect, k_difficulty), dim=1)))
@@ -118,6 +123,8 @@ class Net(nn.Module):
         
         output = ((1-s)*o) + (g*(1-o))
         return output, affect
+
+
 
     def apply_clipper(self):
         clipper = NoneNegClipper()
