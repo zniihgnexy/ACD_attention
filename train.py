@@ -11,8 +11,8 @@ exer_n = 3162
 knowledge_n = 102
 student_n = 1709
 
-device = torch.device(('cuda:0') if torch.cuda.is_available() else 'cpu')
-epoch_n = 100
+device = torch.device(('cpu') if torch.cuda.is_available() else 'cpu')
+epoch_n = 200
 
 
 def train():
@@ -40,7 +40,7 @@ def train():
             loss = loss_function(torch.log(output), labels) + 1 * affect_loss_function(affect_p, affects)
             loss.backward()  
             optimizer.step()
-            net.apply_clipper()  # 单调性假设
+            net.apply_clipper()
 
             running_loss += loss.item()
             if batch_count % 200 == 199:
