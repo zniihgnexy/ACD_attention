@@ -3348,3 +3348,7 @@ epoch= 103, accuracy= 0.720964, rmse= 0.430330, auc= 0.793348
 epoch= 104, accuracy= 0.720887, rmse= 0.430354, auc= 0.793326
 epoch= 105, accuracy= 0.720887, rmse= 0.430382, auc= 0.793299
 epoch= 0, accuracy= 0.682930, rmse= 0.452837, auc= 0.744906
+epoch= 0, accuracy= 0.684873, rmse= 0.452450, auc= 0.745613
+epoch= 0, accuracy= 0.700404, rmse= 0.443841, auc= 0.776944
+epoch= 0, accuracy= 0.698639, rmse= 0.446118, auc= 0.774905
+epoch= 1, accuracy= 0.709014, rmse= 0.438727, auc= 0.778924

@@ -80,9 +80,15 @@ def validate(model, epoch):
     accuracy = correct_count / exer_count
     rmse = np.sqrt(np.mean((label_all - pred_all)**2))
     auc = roc_auc_score(label_all, pred_all)
+    
     print(f'epoch= {epoch}, accuracy= {accuracy:.6f}, rmse= {rmse:.6f}, auc= {auc:.6f}')
+    
+    # Write validation results to file
     with open('result/model_val.txt', 'a', encoding='utf8') as f:
         f.write(f'epoch= {epoch}, accuracy= {accuracy:.6f}, rmse= {rmse:.6f}, auc= {auc:.6f}\n')
+
+    # Ensure the function returns the calculated rmse and auc
+    return rmse, auc
 
 def save_snapshot(model, filename):
     torch.save(model.state_dict(), filename)
